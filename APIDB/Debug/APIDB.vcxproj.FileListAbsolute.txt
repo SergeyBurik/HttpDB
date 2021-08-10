@@ -1,0 +1,2 @@
+C:\C++\APIDB\Debug\APIDB.exe
+C:\C++\APIDB\Debug\APIDB.pdb
