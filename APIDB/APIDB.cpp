@@ -9,6 +9,7 @@
 using namespace std;
 
 void exiting() {
+	// TODO: save db
 	cout << "Saving data before exit.." << endl;
 }
 
@@ -16,7 +17,7 @@ int main() {
 	Repository repo;
 	repo.db_path = "core/db/";
 	repo.init();
-	
+
 	Server server;
 	server.start(8777, repo, true);
 
@@ -24,5 +25,3 @@ int main() {
 
 	return 0;
 }
-
-

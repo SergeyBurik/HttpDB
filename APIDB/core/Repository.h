@@ -19,6 +19,6 @@ public:
 	json find_saved_filter(string collection, json filter);
 	json filter(string collection, json query);
 	void update(string collection, json query, json update_data);
-	void remove(string collection, json query);
+	bool remove(string collection, json query);
 };
 

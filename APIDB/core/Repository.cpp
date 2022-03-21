@@ -15,8 +15,8 @@ using namespace std;
 
 void Repository::init() {
 	cout << "Initalizing db collections" << endl;
-
 	path p(db_path);
+
 	for (auto i = directory_iterator(p); i != directory_iterator(); i++) {
 		if (!is_directory(i->path())) {
 			string collection_file = i->path().filename().string();
@@ -24,7 +24,7 @@ void Repository::init() {
 
 			size_t lastindex = collection_file.find_last_of(".");
 			string collection = collection_file.substr(0, lastindex);
-			 
+
 			db[collection] = get_json(db_path + collection_file);
 		}
 		else
@@ -38,6 +38,9 @@ void Repository::create_collection(string collection) {
 	string path = db_path + collection + ".json";
 	if (!file_exists(path)) {
 		write_to_file(path, "{"" + collection + "": []}");
+		json obj;
+		db[collection] = obj;
+		db[collection][collection] = json::array();
 	}
 }
 
@@ -49,7 +52,7 @@ json Repository::get_all(string collection) {
 void Repository::create(string collection, json object) {
 	// create function (insert)
 	string path = db_path + collection + ".json";
-	
+
 	json j = db[collection];
 
 	// create id to object
@@ -90,9 +93,9 @@ void Repository::update(string collection, json filter, json update_data) {
 	write_to_file(db_path + collection + ".json", j.dump(), true);
 }
 
-void Repository::remove(string collection, json filter) {
+bool Repository::remove(string collection, json filter) {
 	json j = db[collection];
-	
+
 	int idx = 0;
 	for (auto& element : j[collection]) {
 		bool flag = true;
@@ -120,13 +123,15 @@ void Repository::remove(string collection, json filter) {
 	}
 
 	// save
-	write_to_file(db_path + collection + ".json", j.dump(), true);
+	//write_to_file(db_path + collection + ".json", j.dump(), true);
+	db[collection] = j[collection];
+	return true;
 }
 
 json Repository::find_saved_filter(string collection, json filter) {
 
 	json filters = db["filters"];
-	
+
 	try {
 		// try to find filter result by filter options
 		string filters_keys_str = "";

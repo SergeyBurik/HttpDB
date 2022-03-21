@@ -11,5 +11,6 @@ public:
 	void create_collection(shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request);
 	void filter(shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request);
 	void create(shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request);
+	void remove(shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request);
 };
 
