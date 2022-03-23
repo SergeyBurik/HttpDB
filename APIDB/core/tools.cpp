@@ -1,5 +1,4 @@
 #include "web-server/server_http.hpp"
-
 #include <nlohmann/json.hpp>
 #include <sys/stat.h>
 #include <random>
@@ -28,6 +27,7 @@ bool file_exists(const string& name) {
 }
 
 string read_file(string path) {
+	// reading file
 	string res;
 	ifstream file(path);
 
@@ -40,12 +40,14 @@ string read_file(string path) {
 }
 
 json get_json(string path) {
+	// parsing json
 	ifstream ifs(path);
 	return json::parse(ifs);
 }
 
 template<typename Base, typename T>
 inline bool instanceof(const T*) {
+	// checking data types
 	return is_base_of<Base, T>::value;
 }
 
@@ -55,6 +57,7 @@ int get_collection_property(json db, string collection, string property) {
 }
 
 json parse_filter_types(SimpleWeb::CaseInsensitiveMultimap query_fields) {
+	// parsing data types of filter keys
 	json filter;
 	for (auto field : query_fields) {
 		// try to find type defenition
@@ -85,6 +88,7 @@ void log(string level, string msg) {
 
 
 string get_uuid() {
+	// generate random uuid
 	static random_device dev;
 	static mt19937 rng(dev());
 
@@ -103,6 +107,7 @@ string get_uuid() {
 }
 
 void write_to_file(string path, string content, bool rewrite = false) {
+	// writing data to file
 	std::wofstream wof;
 	if (rewrite) {
 		wof.open(path, std::ios::out | std::ofstream::trunc);
@@ -121,7 +126,6 @@ void write_to_file(string path, string content, bool rewrite = false) {
 		wof << res << endl;
 		wof.flush();
 		wof.close();
-		//std::cout << "Saved to: " + path << std::endl;
 	}
 	else {
 		std::cerr << "Failed to open file : " << SYSERROR() << std::endl;

@@ -1,8 +1,6 @@
-#include "Controller.h"
 #include "web-server/server_http.hpp"
 #include <iostream>
 #include <nlohmann/json.hpp>
-
 #include <iostream>
 #include <boost/asio.hpp>
 
@@ -19,7 +17,8 @@ void Controller::create_collection(shared_ptr<HttpServer::Response> response, sh
     try {
         // create
         json req = json::parse(request->content.string());
-
+        
+        // parse request
         repo.create_collection(req["name"]);
 
         response->write(SimpleWeb::StatusCode::success_ok);
@@ -30,9 +29,10 @@ void Controller::create_collection(shared_ptr<HttpServer::Response> response, sh
 
 void Controller::create(shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
     try {
-        // create
+        // create record    
         string collection = request->path_match[1].str();
 
+        // parse request
         json req = json::parse(request->content.string());
 
         repo.create(collection, req);
@@ -53,6 +53,7 @@ void Controller::remove(shared_ptr<HttpServer::Response> response, shared_ptr<Ht
         json filter;
         bool res;
         // query fields to json
+        // parse query data types
         filter = parse_filter_types(query_fields);
         res = repo.remove(collection, filter);
 
@@ -74,11 +75,12 @@ void Controller::filter(shared_ptr<HttpServer::Response> response, shared_ptr<Ht
         string res;    
         // query fields to json
         if (query_fields.size()) {
+            // parse query data types
             filter = parse_filter_types(query_fields);
 
             // try to find filter result in memory
             json saved_filter = repo.find_saved_filter(collection, filter);        
-
+            // if exists
             if (saved_filter != NULL) {
                 res = saved_filter["text"];
             } else {
@@ -86,6 +88,7 @@ void Controller::filter(shared_ptr<HttpServer::Response> response, shared_ptr<Ht
             }
         }
         else {
+            // get all records
             res = repo.get_all(collection).dump();
         }
 

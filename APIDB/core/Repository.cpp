@@ -14,6 +14,7 @@ using namespace boost::filesystem;
 using namespace std;
 
 void Repository::init() {
+	// reading data from files
 	cout << "Initalizing db collections" << endl;
 	path p(db_path);
 
@@ -25,6 +26,7 @@ void Repository::init() {
 			size_t lastindex = collection_file.find_last_of(".");
 			string collection = collection_file.substr(0, lastindex);
 
+			// appending data to db
 			db[collection] = get_json(db_path + collection_file);
 		}
 		else
@@ -34,11 +36,12 @@ void Repository::init() {
 }
 
 void Repository::create_collection(string collection) {
-	// create collection function
+	// create collection
 	string path = db_path + collection + ".json";
 	if (!file_exists(path)) {
 		write_to_file(path, "{"" + collection + "": []}");
 		json obj;
+		// appending collection to db
 		db[collection] = obj;
 		db[collection][collection] = json::array();
 	}
@@ -53,6 +56,7 @@ void Repository::create(string collection, json object) {
 	// create function (insert)
 	string path = db_path + collection + ".json";
 
+	// get collection
 	json j = db[collection];
 
 	// create id to object
@@ -63,14 +67,18 @@ void Repository::create(string collection, json object) {
 }
 
 void Repository::update(string collection, json filter, json update_data) {
+	// get collection
 	json j = db[collection];
 
+	// filtering data
 	for (auto& element : j[collection]) {
 		bool flag = true;
+		// filter by keys
 		for (auto& f : filter.items()) {
 			string key = f.key();
 
 			if (element.contains(key)) {
+				// if there is no such key -> break
 				if (element[key] != f.value()) {
 					flag = false;
 					break;
@@ -94,9 +102,10 @@ void Repository::update(string collection, json filter, json update_data) {
 }
 
 bool Repository::remove(string collection, json filter) {
+	// get collection
 	json j = db[collection];
 
-	int idx = 0;
+	// filtering data by keys
 	for (auto& element : j[collection]) {
 		bool flag = true;
 		for (auto& f : filter.items()) {
@@ -116,10 +125,8 @@ bool Repository::remove(string collection, json filter) {
 
 		if (flag) {
 			// delete
-			//j[collection].erase(idx);
 			element = NULL;
 		}
-		idx++;
 	}
 
 	// save
@@ -158,8 +165,7 @@ json Repository::find_saved_filter(string collection, json filter) {
 }
 
 json Repository::filter(string collection, json filter) {
-	// filter data function
-
+	// filter data 
 	json j = db[collection];
 
 	json res = { {collection, {}} };
@@ -190,6 +196,7 @@ json Repository::filter(string collection, json filter) {
 
 	string key = filters_keys_str + "$::" + collection;
 
+	// saving filter result
 	json filters = db["filters"];
 	filters["filters"][key] = { {"result", res}, {"text", res.dump()}, {"timestamp", time(0)} };
 

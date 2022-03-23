@@ -14,14 +14,14 @@ void exiting() {
 }
 
 int main() {
+	// initialize repository controller
 	Repository repo;
 	repo.db_path = "core/db/";
 	repo.init();
 
+	// init and start server
 	Server server;
 	server.start(8777, repo, true);
-
-	//std::atexit(exiting);
 
 	return 0;
 }

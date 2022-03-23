@@ -1,6 +1,5 @@
 #include "Server.h"
 #include "web-server/server_http.hpp"
-
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include "Controller.h"
@@ -35,12 +34,14 @@ void Server::start(int port, Repository repo, bool debug) {
     HttpServer server;
     server.config.port = port;
     
+    // start 4 worker threads
     Workers workers(4);
 
+    // initialize controller class
     Controller controller;
     controller.repo = repo;
 
-
+    // routing
     // GET /
     server.resource["^/$"]["GET"] = [&workers](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         log("DEBUG", "Request GET /");
