@@ -44,7 +44,7 @@ void Server::start(int port, Repository repo, bool debug) {
     // routing
     // GET /
     server.resource["^/$"]["GET"] = [&workers](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
-        log("DEBUG", "Request GET /");
+        // log("DEBUG", "Request GET /");
      
         workers.service.post([response] {
             response->write(SimpleWeb::StatusCode::success_ok);
@@ -53,7 +53,7 @@ void Server::start(int port, Repository repo, bool debug) {
 
     // POST /collection/create
     server.resource["^/collection/create"]["POST"] = [&](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-        log("DEBUG", "Request GET /collection/create");
+        // log("DEBUG", "Request GET /collection/create");
 
         workers.service.post([response, request, &controller] {
             controller.create_collection(response, request);
@@ -63,7 +63,7 @@ void Server::start(int port, Repository repo, bool debug) {
     // GET /{collection}/?key=value
     server.resource["^/([a-z]+)"]["GET"] = [&workers, &controller](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         string collection = request->path_match[1].str();
-        log("DEBUG", "Request GET /" + collection + "/?filter={\"key\":\"value\"}");
+        // log("DEBUG", "Request GET /" + collection + "/?filter={\"key\":\"value\"}");
 
         workers.service.post([response, request, &controller] {
             controller.filter(response, request);
@@ -74,7 +74,7 @@ void Server::start(int port, Repository repo, bool debug) {
 
     // POST /{collection}
     server.resource["^/([a-z]+)"]["POST"] = [&](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-        log("DEBUG", "Request POST /{collection}");
+        // log("DEBUG", "Request POST /{collection}");
 
         workers.service.post([response, request, &controller] {
             controller.create(response, request);
